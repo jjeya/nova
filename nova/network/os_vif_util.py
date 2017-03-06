@@ -341,7 +341,6 @@ def _nova_to_osvif_vif_vhostuser(vif):
     else:
         raise NotImplementedError()
 
-
 # VIF_TYPE_IVS = 'ivs'
 def _nova_to_osvif_vif_ivs(vif):
     raise NotImplementedError()
