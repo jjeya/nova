@@ -403,6 +403,15 @@ class LibvirtVifTestCase(test.NoDBTestCase):
             port_profile=self.os_vif_ovs_prof,
             network=self.os_vif_network)
 
+        self.os_vif_vhostuser = osv_objects.vif.VIFVHostUser(
+            id="dc065497-3c8d-4f44-8fb4-e1d33c16a536",
+            address="22:52:25:62:e2:aa",
+            plugin="vrouter",
+            vif_name="tap85264162-70",
+            path='/var/run/vrouter/uvh_vif_tap85264162-70',
+            mode='client',
+            network=self.os_vif_network)
+
         self.os_vif_inst_info = osv_objects.instance_info.InstanceInfo(
             uuid="d5b1090c-9e00-4fa4-9504-4b1494857970",
             name="instance-000004da",
