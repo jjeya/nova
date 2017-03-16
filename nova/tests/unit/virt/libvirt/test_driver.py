@@ -3581,6 +3581,7 @@ class LibvirtConnTestCase(test.NoDBTestCase):
                               vconfig.LibvirtConfigMemoryBalloon)
 
         self.assertEqual(cfg.devices[4].target_name, "com.redhat.spice.0")
+        self.assertEqual(cfg.devices[4].type, 'spicevmc')
         self.assertEqual(cfg.devices[5].type, "spice")
         self.assertEqual(cfg.devices[6].type, "qxl")
 
@@ -4167,6 +4168,7 @@ class LibvirtConnTestCase(test.NoDBTestCase):
 
         self.assertEqual(cfg.devices[4].type, "tablet")
         self.assertEqual(cfg.devices[5].target_name, "com.redhat.spice.0")
+        self.assertEqual(cfg.devices[5].type, 'spicevmc')
         self.assertEqual(cfg.devices[6].type, "vnc")
         self.assertEqual(cfg.devices[7].type, "spice")
 
@@ -5901,6 +5903,17 @@ class LibvirtConnTestCase(test.NoDBTestCase):
                                      (expec_val,
                                       ("disk", "virtio", "vdb"),
                                       ("disk", "virtio", "vdc")))
+
+    @mock.patch.object(host.Host, 'get_guest')
+    def test_instance_exists(self, mock_get_guest):
+        drvr = libvirt_driver.LibvirtDriver(fake.FakeVirtAPI(), False)
+        self.assertTrue(drvr.instance_exists(None))
+
+        mock_get_guest.side_effect = exception.InstanceNotFound
+        self.assertFalse(drvr.instance_exists(None))
+
+        mock_get_guest.side_effect = exception.InternalError
+        self.assertFalse(drvr.instance_exists(None))
 
     @mock.patch.object(host.Host, "list_instance_domains")
     def test_list_instances(self, mock_list):
