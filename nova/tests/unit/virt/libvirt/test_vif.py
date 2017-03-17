@@ -403,7 +403,7 @@ class LibvirtVifTestCase(test.NoDBTestCase):
             port_profile=self.os_vif_ovs_prof,
             network=self.os_vif_network)
 
-        self.os_vif_vhostuser = osv_objects.vif.VIFVHostUser(
+        self.os_vif_vhostuser_vrouter = osv_objects.vif.VIFVHostUser(
             id="dc065497-3c8d-4f44-8fb4-e1d33c16a536",
             address="22:52:25:62:e2:aa",
             plugin="vrouter",
@@ -1556,4 +1556,30 @@ class LibvirtVifTestCase(test.NoDBTestCase):
                 <target dev="nicdc065497-3c"/>
                 <filterref
                  filter="nova-instance-instance-00000001-22522562e2aa"/>
+            </interface>""", cfg.to_xml())
+
+    @mock.patch("nova.network.os_vif_util.nova_to_osvif_instance")
+    @mock.patch("nova.network.os_vif_util.nova_to_osvif_vif")
+    def test_config_os_vif_vhostuser_vrouter(self, mock_convert_vif,
+                                      mock_convert_inst):
+        mock_convert_vif.return_value = self.os_vif_vhostuser_vrouter
+        mock_convert_inst.return_value = self.os_vif_inst_info
+
+        d = vif.LibvirtGenericVIFDriver()
+        hostimpl = host.Host("qemu:///system")
+        flavor = objects.Flavor(name='m1.small')
+        image_meta = objects.ImageMeta.from_dict({})
+        d = vif.LibvirtGenericVIFDriver()
+        cfg = d.get_config(self.instance, self.vif_ovs,
+                           image_meta, flavor,
+                           CONF.libvirt.virt_type,
+                           hostimpl)
+
+        self._assertXmlEqual("""
+            <interface type="vhostuser">
+                <mac address="22:52:25:62:e2:aa"/>
+                <model type="virtio"/>
+                <source type="unix"
+                        path='/var/run/vrouter/uvh_vif_tap85264162-70'
+                        mode='client'/>
             </interface>""", cfg.to_xml())

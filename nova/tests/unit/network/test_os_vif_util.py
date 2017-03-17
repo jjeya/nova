@@ -840,7 +840,7 @@ class OSVIFUtilTestCase(test.NoDBTestCase):
             active=False,
             address="22:52:25:62:e2:aa",
             plugin="vrouter",
-            vif_name="tap85264162-70",
+            vif_name="nicdc065497-3c",
             path='/fake/socket',
             mode='client',
             has_traffic_filtering=False,
@@ -849,7 +849,6 @@ class OSVIFUtilTestCase(test.NoDBTestCase):
                 id="b82c1929-051e-481d-8110-4669916c7915",
                 bridge_interface=None,
                 label="Demo Net",
-                mtu="1500",
                 subnets=osv_objects.subnet.SubnetList(
                     objects=[])))
 
